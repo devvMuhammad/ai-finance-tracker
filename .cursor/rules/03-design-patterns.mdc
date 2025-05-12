@@ -1,0 +1,152 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Design Patterns Implementation
+
+## Creational Pattern: Singleton
+
+The Singleton pattern ensures a class has only one instance while providing global access to it.
+
+### Implementation in Database Connection:
+```typescript
+// src/lib/database.ts
+export class DatabaseConnection {
+  private static instance: DatabaseConnection;
+  
+  private constructor() {
+    // Initialize connection
+  }
+  
+  public static getInstance(): DatabaseConnection {
+    if (!DatabaseConnection.instance) {
+      DatabaseConnection.instance = new DatabaseConnection();
+    }
+    return DatabaseConnection.instance;
+  }
+  
+  // Methods for data operations
+}
+```
+
+Usage:
+```typescript
+const dbConnection = DatabaseConnection.getInstance();
+```
+
+## Behavioral Pattern: Strategy
+
+The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable.
+
+### Implementation for Budgeting Strategies:
+```typescript
+// src/patterns/strategy/budget-strategy.ts
+export interface BudgetStrategy {
+  calculateBudget(income: number, expenses: Record<string, number>): BudgetPlan;
+}
+
+export class ZeroBasedBudgeting implements BudgetStrategy {
+  calculateBudget(income: number, expenses: Record<string, number>): BudgetPlan {
+    // Zero-based budgeting implementation
+  }
+}
+
+export class FiftyThirtyTwentyRule implements BudgetStrategy {
+  calculateBudget(income: number, expenses: Record<string, number>): BudgetPlan {
+    // 50/30/20 rule implementation
+  }
+}
+
+export class BudgetContext {
+  private strategy: BudgetStrategy;
+  
+  constructor(strategy: BudgetStrategy) {
+    this.strategy = strategy;
+  }
+  
+  setStrategy(strategy: BudgetStrategy) {
+    this.strategy = strategy;
+  }
+  
+  createBudgetPlan(income: number, expenses: Record<string, number>): BudgetPlan {
+    return this.strategy.calculateBudget(income, expenses);
+  }
+}
+```
+
+## Structural Pattern: Composite
+
+The Composite pattern lets you compose objects into tree structures to represent part-whole hierarchies.
+
+### Implementation for Financial Accounts:
+```typescript
+// src/patterns/composite/financial-account.ts
+export interface FinancialAccount {
+  getName(): string;
+  getBalance(): number;
+  addTransaction(amount: number, description: string): void;
+}
+
+export class Account implements FinancialAccount {
+  private name: string;
+  private balance: number;
+  private transactions: Transaction[] = [];
+  
+  constructor(name: string, initialBalance: number = 0) {
+    this.name = name;
+    this.balance = initialBalance;
+  }
+  
+  getName(): string {
+    return this.name;
+  }
+  
+  getBalance(): number {
+    return this.balance;
+  }
+  
+  addTransaction(amount: number, description: string): void {
+    const transaction = new Transaction(amount, description);
+    this.transactions.push(transaction);
+    this.balance += amount;
+  }
+}
+
+export class AccountGroup implements FinancialAccount {
+  private name: string;
+  private accounts: FinancialAccount[] = [];
+  
+  constructor(name: string) {
+    this.name = name;
+  }
+  
+  getName(): string {
+    return this.name;
+  }
+  
+  getBalance(): number {
+    return this.accounts.reduce((sum, account) => sum + account.getBalance(), 0);
+  }
+  
+  addTransaction(amount: number, description: string): void {
+    throw new Error("Cannot add transactions directly to an account group");
+  }
+  
+  addAccount(account: FinancialAccount): void {
+    this.accounts.push(account);
+  }
+  
+  removeAccount(account: FinancialAccount): void {
+    const index = this.accounts.indexOf(account);
+    if (index !== -1) {
+      this.accounts.splice(index, 1);
+    }
+  }
+  
+  getAccounts(): FinancialAccount[] {
+    return [...this.accounts];
+  }
+}
+```
+

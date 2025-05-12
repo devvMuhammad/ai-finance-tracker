@@ -1,0 +1,233 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Setup and Directory Structure
+
+## Dependencies
+
+Required dependencies for the project:
+
+```json
+{
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.0.0",
+    "zod": "^3.0.0",
+    "@hookform/resolvers": "^3.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "date-fns": "^2.0.0",
+    "recharts": "^2.0.0",
+    "clsx": "^1.0.0",
+    "tailwind-merge": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "postcss": "^8.0.0",
+    "autoprefixer": "^10.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0"
+  }
+}
+```
+
+## Directory Structure
+
+```
+finance-tracker/
+├── public/
+│   ├── favicon.ico
+│   └── images/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── (dashboard)/
+│   │   │   ├── dashboard/
+│   │   │   ├── transactions/
+│   │   │   ├── goals/
+│   │   │   ├── accounts/
+│   │   │   └── recommendations/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── ui/
+│   │   │   └── [shadcn components]
+│   │   ├── dashboard/
+│   │   ├── transactions/
+│   │   ├── goals/
+│   │   ├── accounts/
+│   │   └── reports/
+│   ├── lib/
+│   │   ├── utils.ts
+│   │   └── database.ts
+│   ├── data/
+│   │   ├── dummy-transactions.ts
+│   │   ├── dummy-accounts.ts
+│   │   ├── dummy-goals.ts
+│   │   └── dummy-recommendations.ts
+│   ├── types/
+│   │   ├── index.ts
+│   │   ├── transaction.ts
+│   │   ├── account.ts
+│   │   └── goal.ts
+│   ├── patterns/
+│   │   ├── singleton/
+│   │   ├── strategy/
+│   │   └── composite/
+│   └── modules/
+│       ├── transactions/
+│       ├── goals/
+│       ├── accounts/
+│       └── recommendations/
+├── tailwind.config.js
+├── next.config.js
+├── tsconfig.json
+└── package.json
+```
+
+## Initial Setup Steps
+
+1. Install shadcn/ui components:
+
+```sh
+npx shadcn-ui@latest init
+```
+
+2. Configure Tailwind CSS:
+
+```sh
+npx tailwindcss init -p
+```
+
+Update the tailwind.config.js file:
+
+```js
+// tailwind.config.js
+module.exports = {
+  darkMode: ["class"],
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+}
+```
+
+3. Install required shadcn/ui components:
+
+```sh
+npx shadcn-ui@latest add button card form input select checkbox tabs table toast dialog
+```
+
+4. Create essential type definitions in src/types/index.ts:
+
+```typescript
+// src/types/index.ts
+export type Transaction = {
+  id: string;
+  description: string;
+  amount: number;
+  date: Date;
+  category: string;
+  subcategory?: string;
+  account: string;
+  tags?: string[];
+};
+
+export type Account = {
+  id: string;
+  name: string;
+  type: 'checking' | 'savings' | 'investment' | 'credit';
+  balance: number;
+  currency: string;
+};
+
+export type Goal = {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  startDate: Date;
+  targetDate: Date;
+  type: 'saving' | 'debt' | 'investment';
+};
+
+export type Recommendation = {
+  id: string;
+  type: 'spending' | 'saving' | 'investment';
+  title: string;
+  description: string;
+  potentialImpact: number;
+  difficulty: 'easy' | 'medium' | 'hard';
+};
+
+export type BudgetPlan = {
+  id: string;
+  name: string;
+  totalIncome: number;
+  allocations: Record<string, number | { amount: number; percentage: number }>;
+};
+```
+

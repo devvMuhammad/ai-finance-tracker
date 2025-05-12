@@ -1,0 +1,144 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Feature Implementation Guidelines
+
+## Transaction Categorization
+
+Implement an intelligent system to categorize financial transactions:
+
+- Use predefined categories (Income, Food, Housing, Transportation, etc.)
+- Allow custom categories and subcategories
+- Implement basic AI/pattern matching for auto-categorization
+
+```typescript
+// src/modules/transactions/transaction-categorizer.ts
+export interface TransactionCategorizer {
+  categorize(description: string, amount: number): string;
+}
+
+export class PatternMatchingCategorizer implements TransactionCategorizer {
+  private patterns: Record<string, RegExp[]> = {
+    'Income': [/salary/i, /deposit/i, /payroll/i],
+    'Food': [/grocery/i, /restaurant/i, /cafe/i],
+    // More patterns
+  };
+  
+  categorize(description: string, amount: number): string {
+    for (const [category, patterns] of Object.entries(this.patterns)) {
+      if (patterns.some(pattern => pattern.test(description))) {
+        return category;
+      }
+    }
+    return 'Uncategorized';
+  }
+}
+```
+
+## Goal Tracking
+
+Implement a system for users to set and track financial goals:
+
+- Support different types of goals (saving, debt reduction, investment)
+- Track progress and projected completion dates
+- Provide visual feedback on goal progress
+
+```typescript
+// src/modules/goals/goal.ts
+export interface Goal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  startDate: Date;
+  targetDate: Date;
+  type: 'saving' | 'debt' | 'investment';
+  
+  getProgress(): number;
+  getRemainingAmount(): number;
+  isOnTrack(): boolean;
+}
+
+// src/modules/goals/goal-tracker.ts
+export class GoalTracker {
+  private goals: Goal[] = [];
+  
+  addGoal(goal: Goal): void {
+    this.goals.push(goal);
+  }
+  
+  updateGoalProgress(goalId: string, amount: number): void {
+    const goal = this.goals.find(g => g.id === goalId);
+    if (goal) {
+      // Update progress
+    }
+  }
+  
+  getGoalsOnTrack(): Goal[] {
+    return this.goals.filter(goal => goal.isOnTrack());
+  }
+  
+  getGoalsBehindSchedule(): Goal[] {
+    return this.goals.filter(goal => !goal.isOnTrack());
+  }
+}
+```
+
+## Financial Recommendations
+
+Implement an AI-driven recommendation system:
+
+- Analyze spending patterns to identify waste or savings opportunities
+- Suggest investment opportunities based on risk profile and goals
+- Provide actionable insights on budget adjustments
+
+```typescript
+// src/modules/recommendations/recommendation-engine.ts
+export interface RecommendationEngine {
+  generateSpendingRecommendations(transactions: Transaction[]): Recommendation[];
+  generateSavingsRecommendations(goals: Goal[], transactions: Transaction[]): Recommendation[];
+  generateInvestmentRecommendations(profile: RiskProfile): Recommendation[];
+}
+
+export class BasicRecommendationEngine implements RecommendationEngine {
+  generateSpendingRecommendations(transactions: Transaction[]): Recommendation[] {
+    // Analyze spending patterns
+    // Identify categories with unusual spending
+    // Generate recommendations
+    return [];
+  }
+  
+  // Other recommendation methods
+}
+```
+
+## Reporting
+
+Create interactive financial reports and visualizations:
+
+- Income vs. Expenses over time
+- Spending breakdown by category
+- Net worth tracking
+- Investment performance
+
+Use React components with modern visualization libraries (integrated with shadcn/ui):
+
+```tsx
+// src/components/reports/SpendingByCategory.tsx
+import { PieChart } from "@/components/ui/charts/pie-chart";
+
+export function SpendingByCategory({ transactions }: { transactions: Transaction[] }) {
+  // Process data for visualization
+  const categoryData = processCategoryData(transactions);
+  
+  return (
+    <div className="p-4 rounded-lg border bg-card">
+      <h3 className="text-lg font-medium mb-4">Spending by Category</h3>
+      <PieChart data={categoryData} />
+    </div>
+  );
+}
+```
+

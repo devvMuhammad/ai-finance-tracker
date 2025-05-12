@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Finance Tracker - Project Overview
+
+## Purpose
+This application is a Personal Finance Management System that helps users track their income, expenses, investments, and savings goals. The system provides features to categorize transactions, generate financial reports, and offer AI-powered recommendations on spending optimization, savings, and investment decisions.
+
+## Core Features
+- Transaction management and categorization
+- Goal tracking and progress visualization
+- AI-powered financial recommendations
+- Interactive financial reports and dashboards
+- Multiple budgeting strategy implementations
+
+## Tech Stack
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Form Handling**: React Hook Form with Zod validation
+- **Data Fetching**: TanStack Query (when needed for client-side)
+- **Data**: Server-side dummy data for demonstration
+
+## Development Approach
+This project implements several design patterns:
+- **Singleton Pattern**: For database connection management
+- **Strategy Pattern**: For different budgeting strategies
+- **Composite Pattern**: For modeling financial accounts and transactions
+
+The architecture follows SOLID principles with high cohesion and loose coupling between modules.
+

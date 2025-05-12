@@ -1,0 +1,49 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Architecture and SOLID Principles
+
+## Project Structure
+- `src/app`: Next.js App Router pages and layouts
+- `src/components`: UI components organized by domain and shared utilities
+- `src/lib`: Core libraries, utilities, and hooks
+- `src/modules`: Domain-specific modules with high cohesion
+- `src/data`: Dummy data services and providers
+- `src/patterns`: Design pattern implementations
+
+## SOLID Implementation
+
+### Single Responsibility Principle
+Each module should have only one reason to change.
+- Separate transaction management from reporting logic
+- Isolate recommendation algorithms from UI components
+
+### Open/Closed Principle
+Software entities should be open for extension but closed for modification.
+- Use interfaces for transaction categorization to allow new categories
+- Implement strategy pattern for expandable budgeting approaches
+
+### Liskov Substitution Principle
+Objects should be replaceable with instances of their subtypes.
+- Financial account types should be interchangeable where appropriate
+- Transaction types must maintain common behaviors
+
+### Interface Segregation Principle
+No client should be forced to depend on methods it does not use.
+- Create focused interfaces for account types
+- Separate read/write operations in data services
+
+### Dependency Inversion Principle
+High-level modules should not depend on low-level modules.
+- Use dependency injection for data services
+- Define abstractions for external services (e.g., recommendation engine)
+
+## Module Cohesion
+Ensure each module has a single, well-defined responsibility:
+- Transaction Module: Managing transactions only
+- Budget Module: Budget strategy implementation
+- Recommendation Module: Financial advice algorithms
+- Reporting Module: Data visualization and reporting
+
