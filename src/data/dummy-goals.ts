@@ -1,51 +1,89 @@
-import { Goal } from '@/types';
+import { Goal } from '@/modules/goals/goal';
+import { GoalTracker } from '@/modules/goals/goal-tracker';
 
-export function getDummyGoals(): Goal[] {
-  return [
-    {
-      id: 'goal-1',
-      name: 'Emergency Fund',
-      targetAmount: 10000,
-      currentAmount: 6500,
-      startDate: new Date('2023-01-01'),
-      targetDate: new Date('2023-12-31'),
-      type: 'saving'
-    },
-    {
-      id: 'goal-2',
-      name: 'Vacation to Europe',
-      targetAmount: 5000,
-      currentAmount: 2200,
-      startDate: new Date('2023-02-15'),
-      targetDate: new Date('2023-11-30'),
-      type: 'saving'
-    },
-    {
-      id: 'goal-3',
-      name: 'Pay Off Credit Card',
-      targetAmount: 3500,
-      currentAmount: 1200,
-      startDate: new Date('2023-01-10'),
-      targetDate: new Date('2023-10-31'),
-      type: 'debt'
-    },
-    {
-      id: 'goal-4',
-      name: 'Stock Investment',
-      targetAmount: 20000,
-      currentAmount: 8000,
-      startDate: new Date('2023-03-01'),
-      targetDate: new Date('2024-03-01'),
-      type: 'investment'
-    },
-    {
-      id: 'goal-5',
-      name: 'New Car Down Payment',
-      targetAmount: 8000,
-      currentAmount: 1500,
-      startDate: new Date('2023-04-15'),
-      targetDate: new Date('2024-04-15'),
-      type: 'saving'
+// Create a singleton instance of GoalTracker
+export class GoalService {
+  private static instance: GoalService;
+  private goalTracker: GoalTracker;
+
+  private constructor() {
+    this.goalTracker = new GoalTracker();
+    this.initializeDummyData();
+  }
+
+  public static getInstance(): GoalService {
+    if (!GoalService.instance) {
+      GoalService.instance = new GoalService();
     }
-  ];
+    return GoalService.instance;
+  }
+
+  private initializeDummyData() {
+    const dummyGoals = [
+      new Goal({
+        id: '1',
+        name: 'Emergency Fund',
+        targetAmount: 10000,
+        currentAmount: 5000,
+        startDate: new Date(2024, 0, 1),
+        targetDate: new Date(2024, 11, 31),
+        type: 'saving',
+      }),
+      new Goal({
+        id: '2',
+        name: 'New Car',
+        targetAmount: 25000,
+        currentAmount: 8000,
+        startDate: new Date(2024, 0, 1),
+        targetDate: new Date(2025, 11, 31),
+        type: 'saving',
+      }),
+      new Goal({
+        id: '3',
+        name: 'Investment Portfolio',
+        targetAmount: 50000,
+        currentAmount: 15000,
+        startDate: new Date(2024, 0, 1),
+        targetDate: new Date(2026, 11, 31),
+        type: 'investment',
+      }),
+    ];
+
+    dummyGoals.forEach(goal => this.goalTracker.addGoal(goal));
+  }
+
+  public getGoals(): Goal[] {
+    return this.goalTracker.getGoals();
+  }
+
+  public addGoal(goalData: Omit<Goal, 'id' | 'currentAmount'>): Goal {
+    const newGoal = new Goal({
+      ...goalData,
+      id: Math.random().toString(36).substr(2, 9),
+      currentAmount: 0,
+    });
+    this.goalTracker.addGoal(newGoal);
+    return newGoal;
+  }
+
+  public updateGoalProgress(goalId: string, amount: number): void {
+    this.goalTracker.updateGoalProgress(goalId, amount);
+  }
+
+  public getGoalsByType(type: 'saving' | 'debt' | 'investment'): Goal[] {
+    return this.goalTracker.getGoalsByType(type);
+  }
+
+  public getGoalsOnTrack(): Goal[] {
+    return this.goalTracker.getGoalsOnTrack();
+  }
+
+  public getGoalsBehindSchedule(): Goal[] {
+    return this.goalTracker.getGoalsBehindSchedule();
+  }
+}
+
+// Export a function to get dummy goals for backward compatibility
+export function getDummyGoals(): Goal[] {
+  return GoalService.getInstance().getGoals();
 } 
